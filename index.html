@@ -51,9 +51,9 @@
     </div>
     <!-- Title -->
     <div class="calcite-title calcite-overflow-hidden">
-      <span class="calcite-title-main">Calcite Maps</span>
+      <span class="calcite-title-main">Parcel Zoom</span>
       <span class="calcite-title-divider hidden-xs"></span>
-      <span class="calcite-title-sub hidden-xs">A Bootstrap theme for building modern map apps</span>
+      <span class="calcite-title-sub hidden-xs">A parcel zoom tool</span>
     </div>
     <!-- Nav -->
     <ul class="nav navbar-nav calcite-nav">
@@ -135,7 +135,8 @@
     
     require([
       // ArcGIS
-      "esri/WebMap",
+      "esri/Map",
+      "esri/layers/FeatureLayer",
       "esri/views/MapView",
 
       // Widgets
@@ -147,7 +148,7 @@
       "esri/widgets/BasemapToggle",
       "esri/widgets/ScaleBar",
       "esri/widgets/Attribution",
-
+      "esri/tasks/Locator",
       // Bootstrap
       "bootstrap/Collapse",
       "bootstrap/Dropdown",
@@ -158,19 +159,56 @@
       "calcite-maps/calcitemaps-arcgis-support-v0.7",
 
       "dojo/domReady!"
-    ], function(WebMap, MapView, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution,Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
+    ], function(Map, FeatureLayer, MapView, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
 
       /******************************************************************
        *
        * Create the map, view and widgets
        * 
        ******************************************************************/
+      var parcelsTemplate = {
+        title: 'Parcels: {objectid}',
+        content:
+          "<p>Parcel ID: {pli_code}</p>" +
+          "<p>City: {own_city}</p>" +
+          "<p>State: {own_state}</p>" +
+          "<p>Parcel Name: {own_name}</p>",
+
+        actions: [{
+          title: "Visit the FL Public Lands Inventory Website",
+          id: "pliWebsite",
+          className: "esri-icon-launch-link-external"
+        }]
+      };
+
+      var parcelsSearchTemplate = {
+        title: 'Parcels: {objectid}',
+        content:
+          "<p>Parcel ID: {PLI_CODE}</p>" +
+          "<p>City: {OWN_CITY}</p>" +
+          "<p>State: {OWN_STATE}</p>" +
+          "<p>Parcel Name: {OWN_NAME}</p>",
+
+        actions: [{
+          title: "Visit the FL Public Lands Inventory Website",
+          id: "pliWebsite",
+          className: "esri-icon-launch-link-external"
+        }]
+      };
+
+
+      var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer/0";
+      var parcelsLayer = new FeatureLayer ({
+        url: parcelsLayerURL,
+        title: "Parcels Layer",
+        visible: true,
+        popupTemplate: parcelsTemplate
+      });
 
       // Map
-      var map = new WebMap({
-        portalItem: {
-          id: "9f91f911f58540ceaac0300c55e18fbb"
-        }
+      var map = new Map({
+        basemap: "topo",
+        layers: [parcelsLayer]
       });
       
       // View
@@ -181,18 +219,51 @@
           top: 50,
           bottom: 0
         },
+        center: [-82.28, 27.8],
+        zoom: 7,
+        constraints: {
+          rotationEnabled: false
+        },
         ui: {components: []}
       });
 
       // Popup and panel sync
-      mapView.then(function(){
+      mapView.when(function(){
         CalciteMapArcGISSupport.setPopupPanelSync(mapView);
       });
 
       // Search - add to navbar
       var searchWidget = new Search({
         container: "searchWidgetDiv",
-        view: mapView
+        view: mapView,
+        allPlaceHolder: "Text search for Parcel ID",
+        sources: [{
+        locator: new Locator({ url: "//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer" }),
+        singleLineFieldName: "SingleLine",
+        name: "Geocoder",
+        localSearchOptions: {
+          minScale: 300000,
+          distance: 50000
+        },
+        placeholder: "Search Geocoder",
+        maxResults: 3,
+        maxSuggestions: 6,
+        suggestionsEnabled: false,
+        minSuggestCharacters: 0
+      }, {
+        featureLayer: {
+          url: parcelsLayerURL,
+          popupTemplate: parcelsSearchTemplate
+        },
+        searchFields: ["PLI_CODE", "OWN_CITY", "OWN_NAME"],
+        suggestionTemplate: "PID: {pli_code}, City: {own_city}, Parcel Name: {own_name}",
+        displayField: "PLI_CODE",
+        exactMatch: false,
+        outFields: ["PLI_CODE", "OWN_CITY", "OWN_NAME", "OWN_STATE"],
+        name: "Florida Public Land Inventories Parcels",
+        placeholder: "Search by Parcel ID, City, or County",
+
+      }],
       });
       CalciteMapArcGISSupport.setSearchExpandEvents(searchWidget);
 
@@ -233,6 +304,13 @@
         container: "legendDiv",
         view: mapView
       });
+
+      // Popup Link event listener
+      mapView.popup.on("trigger-action", function (event) {
+      if (event.action.id === "pliWebsite") {
+        window.open("http://floridapli.net/");
+      }
+    }); 
 
     });
   </script>
