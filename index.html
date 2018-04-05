@@ -33,7 +33,7 @@
 
   <nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-custom" style="background-color: #699999">
     <!-- Menu -->
-    <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-custom" role="presentation" style="background-color: #699999">
+    <div class="dropdown calcite-dropdown calcite-text-light calcite-bg-custom" role="presentation" style="background-color: #699999">
       <a class="dropdown-toggle" role="menubutton" aria-haspopup="true" aria-expanded="false" tabindex="0">
         <div class="calcite-dropdown-toggle">
           <span class="sr-only">Toggle dropdown menu</span>
@@ -201,10 +201,11 @@
       var parcelsLayer = new FeatureLayer ({
         url: parcelsLayerURL,
         title: "Parcels Layer",
-        visible: true,
+        visible: false,
         minScale: 100000,
         popupTemplate: parcelsTemplate
       });
+
 
       // Map
       var map = new Map({
