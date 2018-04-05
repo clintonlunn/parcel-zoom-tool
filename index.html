@@ -31,9 +31,9 @@
 <body class="calcite-maps calcite-nav-top">
   <!-- Navbar -->
 
-  <nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-dark">
+  <nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-custom" style="background-color: #699999">
     <!-- Menu -->
-    <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-light" role="presentation">
+    <div class="dropdown calcite-dropdown calcite-text-dark calcite-bg-custom" role="presentation" style="background-color: #699999">
       <a class="dropdown-toggle" role="menubutton" aria-haspopup="true" aria-expanded="false" tabindex="0">
         <div class="calcite-dropdown-toggle">
           <span class="sr-only">Toggle dropdown menu</span>
@@ -77,7 +77,7 @@
 
   <!-- Panels -->
 
-  <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-dark panel-group">
+  <div class="calcite-panels calcite-panels-right calcite-text-light calcite-bg-custom panel-group" style="background-color: #699999">
 
     <!-- Panel - Basemaps -->
 
@@ -202,6 +202,7 @@
         url: parcelsLayerURL,
         title: "Parcels Layer",
         visible: true,
+        minScale: 100000,
         popupTemplate: parcelsTemplate
       });
 
