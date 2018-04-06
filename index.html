@@ -24,6 +24,10 @@
       height: 100%;
       width: 100%;
     }
+
+    .arcgisSearch .searchMenu{  
+      color: #F0F;  
+    }  
   </style>
 
 </head>
@@ -139,6 +143,10 @@
       "esri/layers/FeatureLayer",
       "esri/layers/MapImageLayer",
       "esri/views/MapView",
+      "esri/symbols/SimpleFillSymbol",
+      "esri/symbols/SimpleLineSymbol",
+      "esri/Graphic",
+      
 
       // Widgets
       "esri/widgets/Home",
@@ -159,8 +167,9 @@
       // Calcite Maps ArcGIS Support
       "calcite-maps/calcitemaps-arcgis-support-v0.7",
 
+      "dojo/_base/Color",
       "dojo/domReady!"
-    ], function(Map, FeatureLayer, MapImageLayer, MapView, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
+    ], function(Map, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color) {
 
       /******************************************************************
        *
@@ -196,6 +205,19 @@
           className: "esri-icon-launch-link-external"
         }]
       };
+
+      /*
+      var highlightSymbol = new SimpleFillSymbol(
+      SimpleFillSymbol.STYLE_SOLID,
+        new SimpleLineSymbol(
+          SimpleLineSymbol.STYLE_SOLID,
+          new Color([255, 0, 0]), 1),
+        //new Color([125, 125, 125, 0.35])
+    );*/
+
+          var highlightSymbol = new SimpleLineSymbol(
+          SimpleLineSymbol.STYLE_SOLID,
+          new Color([66, 244, 217]), 1);
 
 
       var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
@@ -269,6 +291,12 @@
         outFields: ["PLI_CODE", "OWN_CITY", "OWN_NAME", "OWN_STATE"],
         name: "Florida Public Land Inventories Parcels",
         placeholder: "Search by Parcel ID, City, or County",
+        resultGraphicEnabled: true,
+        resultSymbol: {
+          type: "simple-line",
+          width: 2,
+          color: [0, 255, 197, 1]
+        }
 
       }],
       });
