@@ -137,6 +137,7 @@
       // ArcGIS
       "esri/Map",
       "esri/layers/FeatureLayer",
+      "esri/layers/MapImageLayer",
       "esri/views/MapView",
 
       // Widgets
@@ -159,7 +160,7 @@
       "calcite-maps/calcitemaps-arcgis-support-v0.7",
 
       "dojo/domReady!"
-    ], function(Map, FeatureLayer, MapView, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
+    ], function(Map, FeatureLayer, MapImageLayer, MapView, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport) {
 
       /******************************************************************
        *
@@ -197,13 +198,17 @@
       };
 
 
-      var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer/0";
-      var parcelsLayer = new FeatureLayer ({
+      var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
+      var parcelsLayer = new MapImageLayer ({
         url: parcelsLayerURL,
         title: "Parcels Layer",
-        visible: true,
-        minScale: 50000,
-        popupTemplate: parcelsTemplate
+        sublayers: [{
+          id: 0,
+          title: "PLI Parcels",
+          visible: true,
+          minScale: 50000,
+          popupTemplate: parcelsTemplate
+       }]
       });
 
 
