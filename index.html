@@ -23,11 +23,7 @@
       padding: 0;
       height: 100%;
       width: 100%;
-    }
-
-    .arcgisSearch .searchMenu{  
-      color: #F0F;  
-    }  
+    } 
   </style>
 
 </head>
@@ -140,12 +136,14 @@
     require([
       // ArcGIS
       "esri/Map",
+      "esri/PopupTemplate",
       "esri/layers/FeatureLayer",
       "esri/layers/MapImageLayer",
       "esri/views/MapView",
       "esri/symbols/SimpleFillSymbol",
       "esri/symbols/SimpleLineSymbol",
       "esri/Graphic",
+      
       
 
       // Widgets
@@ -169,25 +167,50 @@
 
       "dojo/_base/Color",
       "dojo/domReady!"
-    ], function(Map, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color) {
+    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color) {
 
       /******************************************************************
        *
        * Create the map, view and widgets
        * 
        ******************************************************************/
+/*
       var parcelsTemplate = {
-        title: 'Parcels: {objectid}',
+        title: 'Owner: {own_name}',
         content:
-          "<p>Parcel ID: {pli_code}</p>" +
-          "<p>City: {own_city}</p>" +
-          "<p>State: {own_state}</p>" +
-          "<p>Parcel Name: {own_name}</p>",
-
+          "<p>Parcel ID: {parcel_id}</p>" +
+          "<p>State Parcel ID: {state_par_}</p>" +
+          "<p>PLI Code: {pli_code}</p>" +
+          "<p>Size: {expression/acres} Acres<p>" +
+          "<p>Value: ${av_nsd:NumberFormat(places: 2)}</p>" +  
+          "<p>TRS: {twn} {rng} {sec}</p>" +
+          "<p>Legal Description: {s_legal}</p>" ,
+        expressionInfos: [{
+          name: "acres",
+          expression: "$feature.no_lnd_unt"
+          //expression: "$feature.no_lnd_unt/100"
+        }],
         actions: [{
           title: "Visit the FL Public Lands Inventory Website",
           id: "pliWebsite",
           className: "esri-icon-launch-link-external"
+        }]
+      };
+*/
+
+      var parcelsTemplate = {
+        title: 'Owner: {own_name}',
+        expressionInfos: [{
+          name: "acres",
+          title: "# of acres in each polygon",
+          expression: "$feature.no_lnd_unt"
+          //expression: "$feature.no_lnd_unt/100"
+        }],
+        content: [{
+          type: "fields",
+          fieldInfos: [{
+            fieldName: "expression/acres"
+          }]
         }]
       };
 
@@ -249,7 +272,7 @@
           bottom: 0
         },
         center: [-82.28, 27.8],
-        zoom: 7,
+        zoom: 14,
         //constraints: {
           //rotationEnabled: false
         //},
@@ -346,6 +369,7 @@
         window.open("http://floridapli.net/");
       }
     }); 
+
 
     });
   </script>
