@@ -166,62 +166,26 @@
       "calcite-maps/calcitemaps-arcgis-support-v0.7",
 
       "dojo/_base/Color",
+      "dojo/number",
       "dojo/domReady!"
-    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color) {
+    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color, number) {
 
       /******************************************************************
        *
        * Create the map, view and widgets
        * 
        ******************************************************************/
-/*
-      var parcelsTemplate = {
-        title: 'Owner: {own_name}',
-        content:
-          "<p>Parcel ID: {parcel_id}</p>" +
-          "<p>State Parcel ID: {state_par_}</p>" +
-          "<p>PLI Code: {pli_code}</p>" +
-          "<p>Size: {expression/acres} Acres<p>" +
-          "<p>Value: ${av_nsd:NumberFormat(places: 2)}</p>" +  
-          "<p>TRS: {twn} {rng} {sec}</p>" +
-          "<p>Legal Description: {s_legal}</p>" ,
-        expressionInfos: [{
-          name: "acres",
-          expression: "$feature.no_lnd_unt"
-          //expression: "$feature.no_lnd_unt/100"
-        }],
-        actions: [{
-          title: "Visit the FL Public Lands Inventory Website",
-          id: "pliWebsite",
-          className: "esri-icon-launch-link-external"
-        }]
-      };
-*/
 
       var parcelsTemplate = {
         title: 'Owner: {own_name}',
-        expressionInfos: [{
-          name: "acres",
-          title: "# of acres in each polygon",
-          expression: "$feature.no_lnd_unt"
-          //expression: "$feature.no_lnd_unt/100"
-        }],
-        content: [{
-          type: "fields",
-          fieldInfos: [{
-            fieldName: "expression/acres"
-          }]
-        }]
-      };
-
-      var parcelsSearchTemplate = {
-        title: 'Parcels: {objectid}',
         content:
-          "<p>Parcel ID: {PLI_CODE}</p>" +
-          "<p>City: {OWN_CITY}</p>" +
-          "<p>State: {OWN_STATE}</p>" +
-          "<p>Parcel Name: {OWN_NAME}</p>",
-
+          "<p><b>Parcel ID:</b> {parcel_id}</p>" +
+          "<p><b>State Parcel ID:</b> {state_par_}</p>" +
+          "<p><b>PLI Code:</b> {pli_code}</p>" +
+          "<p><b>Size:</b> {no_lnd_unt:NumberFormat(places: 2)} Acres<p>" +
+          "<p><b>Value:</b> ${av_nsd:NumberFormat(places: 2)}</p>" +  
+          "<p><b>TRS:</b> {twn} {rng} {sec}</p>" +
+          "<p><b>Legal Description:</b> {s_legal}</p>" ,
         actions: [{
           title: "Visit the FL Public Lands Inventory Website",
           id: "pliWebsite",
@@ -229,18 +193,27 @@
         }]
       };
 
-      /*
-      var highlightSymbol = new SimpleFillSymbol(
-      SimpleFillSymbol.STYLE_SOLID,
-        new SimpleLineSymbol(
-          SimpleLineSymbol.STYLE_SOLID,
-          new Color([255, 0, 0]), 1),
-        //new Color([125, 125, 125, 0.35])
-    );*/
 
-          var highlightSymbol = new SimpleLineSymbol(
-          SimpleLineSymbol.STYLE_SOLID,
-          new Color([66, 244, 217]), 1);
+      var parcelsSearchTemplate = {        
+        title: 'Owner: {own_name}',
+        content:
+          "<p><b>Parcel ID:</b> {PARCEL_ID}</p>" +
+          "<p><b>State Parcel ID:</b> {STATE_PAR_}</p>" +
+          "<p><b>PLI Code:</b> {PLI_CODE}</p>" +
+          "<p><b>Size:</b> {NO_LND_UNT} Acres<p>" +
+          "<p><b>Value:</b> ${AV_NSD}</p>" +  
+          "<p><b>TRS:</b> {TWN} {RNG} {SEC}</p>" +
+          "<p><b>Legal Description:</b> {S_LEGAL}</p>" ,
+        actions: [{
+          title: "Visit the FL Public Lands Inventory Website",
+          id: "pliWebsite",
+          className: "esri-icon-launch-link-external"
+        }]
+      };
+
+      var highlightSymbol = new SimpleLineSymbol(
+      SimpleLineSymbol.STYLE_SOLID,
+      new Color([66, 244, 217]), 1);
 
 
       var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
@@ -311,7 +284,7 @@
         suggestionTemplate: "PID: {pli_code}, City: {own_city}, Parcel Name: {own_name}",
         displayField: "PLI_CODE",
         exactMatch: false,
-        outFields: ["PLI_CODE", "OWN_CITY", "OWN_NAME", "OWN_STATE"],
+        outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
         name: "Florida Public Land Inventories Parcels",
         placeholder: "Search by Parcel ID, City, or County",
         resultGraphicEnabled: true,
