@@ -263,6 +263,25 @@
         view: mapView,
         allPlaceHolder: "Text search for Parcel ID",
         sources: [{
+        featureLayer: {
+          url: parcelsLayerURL,
+          popupTemplate: parcelsSearchTemplate
+        },
+        searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
+        suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
+        displayField: "PLI_CODE",
+        exactMatch: false,
+        outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
+        name: "Florida Public Land Inventories Parcels",
+        placeholder: "Search by Parcel ID, City, or County",
+        resultGraphicEnabled: true,
+        resultSymbol: {
+          type: "simple-line",
+          width: 2,
+          color: [0, 255, 197, 1]
+        }
+
+      }, {
         locator: new Locator({ url: "//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer" }),
         singleLineFieldName: "SingleLine",
         name: "Geocoder",
@@ -276,25 +295,6 @@
         suggestionsEnabled: true,
         minSuggestCharacters: 0,
         countryCode: "US"
-      }, {
-        featureLayer: {
-          url: parcelsLayerURL,
-          popupTemplate: parcelsSearchTemplate
-        },
-        searchFields: ["PLI_CODE", "OWN_CITY", "OWN_NAME"],
-        suggestionTemplate: "PID: {pli_code}, City: {own_city}, Parcel Name: {own_name}",
-        displayField: "PLI_CODE",
-        exactMatch: false,
-        outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
-        name: "Florida Public Land Inventories Parcels",
-        placeholder: "Search by Parcel ID, City, or County",
-        resultGraphicEnabled: true,
-        resultSymbol: {
-          type: "simple-line",
-          width: 2,
-          color: [0, 255, 197, 1]
-        }
-
       }],
       });
       CalciteMapArcGISSupport.setSearchExpandEvents(searchWidget);
