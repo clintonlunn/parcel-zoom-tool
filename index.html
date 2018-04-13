@@ -246,9 +246,6 @@
         },
         center: [-82.28, 27.8],
         zoom: 7,
-        //constraints: {
-          //rotationEnabled: false
-        //},
         ui: {components: []}
       });
 
@@ -279,7 +276,8 @@
           type: "simple-line",
           width: 2,
           color: [0, 255, 197, 1]
-        }
+        },
+        autoNavigate: false
 
       }, {
         locator: new Locator({ url: "//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer" }),
@@ -335,6 +333,16 @@
       var legendWidget = new Legend({
         container: "legendDiv",
         view: mapView
+      });
+      
+      // Watch search result
+      searchWidget.on("select-result", function(event){
+        console.log(event)
+        mapView.goTo({
+          target: event.result.feature,
+          //zoom: 
+          //scale:
+        });
       });
 
       // Popup Link event listener
