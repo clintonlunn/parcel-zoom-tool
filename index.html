@@ -349,7 +349,12 @@
       // Panel widgets - add legend
       var legendWidget = new Legend({
         container: "legendDiv",
-        view: mapView
+        view: mapView,
+        layerInfos: [{
+          layer: parcelsLayer,
+          title: "Florida Public Lands Inventory"
+        }]
+
       });
 
       // Watch Opacity-Slider
