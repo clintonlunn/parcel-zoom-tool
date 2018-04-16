@@ -338,13 +338,14 @@
       // Watch search result
       searchWidget.on("select-result", function(event){
         console.log(event)
-        var searchExtent = result.feature.geometry.extent;
+        var ext = event.result.extent;
+        cloneExt = ext.clone();
+        console.log(cloneExt);
         mapView.goTo({
-          target: event.result.feature.geometry.extent,
-          extent: event.result.feature.geometry.extent
+          target: event.result.feature,
+          extent: cloneExt.expand(1.75)
         });
-        console.log("hello");
-        });
+      });
       
 
       // Popup Link event listener
