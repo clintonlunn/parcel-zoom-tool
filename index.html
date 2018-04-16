@@ -109,6 +109,10 @@
           <div id="legendDiv"></div>
         </div>
       </div>
+      <div class="panel-body">
+        <label id="opacity-label" for="opacity-slider">Opacity: 100%</label>
+        <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value="1">
+    </div>
     </div>
 
   </div>
@@ -143,6 +147,8 @@
       "esri/symbols/SimpleFillSymbol",
       "esri/symbols/SimpleLineSymbol",
       "esri/Graphic",
+      "dojo/query",
+
       
       
 
@@ -167,8 +173,9 @@
 
       "dojo/_base/Color",
       "dojo/number",
+      "dojo/dom",
       "dojo/domReady!"
-    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color, number) {
+    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, query, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color, number, dom) {
 
       /******************************************************************
        *
@@ -334,6 +341,14 @@
         container: "legendDiv",
         view: mapView
       });
+
+      // Watch Opacity-Slider
+      query("#opacity-slider").on("input", function() {
+	      var value = parseFloat(dom.byId("opacity-slider").value);
+	      dom.byId("opacity-label").innerText = "Opacity: " + Math.round(value * 100) + "%";
+	      parcelsLayer.opacity = value;
+        console.log(parcelsLayer.opacity);
+	    });
       
       // Watch search result
       searchWidget.on("select-result", function(event){
