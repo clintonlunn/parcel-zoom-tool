@@ -11,6 +11,8 @@ require([
     "esri/symbols/SimpleFillSymbol",
     "esri/symbols/SimpleLineSymbol",
     "esri/Graphic",
+    "esri/layers/GraphicsLayer",
+    "esri/geometry/geometryEngine",
     "dojo/query",
 
     
@@ -40,7 +42,7 @@ require([
     "dojo/dom",
     "dojo/dom-construct",
     "dojo/domReady!"
-    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, QueryTask, Query, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, query, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color, number, dom, domConstruct) {
+    ], function(Map, PopupTemplate, FeatureLayer, MapImageLayer, QueryTask, Query, MapView, SimpleFillSymbol, SimpleLineSymbol, Graphic, GraphicsLayer, geometryEngine, query, Home, Zoom, Compass, Search, Legend, BasemapToggle, ScaleBar, Attribution, Locator, Collapse, Dropdown, CalciteMaps, CalciteMapArcGISSupport, Color, number, dom, domConstruct) {
 
     /******************************************************************
      *
@@ -101,11 +103,15 @@ require([
         }]
     });
 
+    var selectionLayer = new GraphicsLayer({
+        listMode: "hide"
+      });
+
 
     // Map
     var map = new Map({
         basemap: "topo",
-        layers: [parcelsLayer]
+        layers: [parcelsLayer, selectionLayer]
     });
     
     // View
@@ -163,6 +169,36 @@ require([
               dom.byId(panelParam).add(option);
             });
           });
+      }
+
+      // Input location from drop down, zoom to it and highlight
+    function zoomToFeature(url, location, attribute) {
+        var multiPolygonGeometries = [];
+        var union = geometryEngine.union(multiPolygonGeometries);
+        var task = new QueryTask({
+          url: url
+        });
+        var params = new Query({
+          where: attribute + " = '" + location + "'",
+          returnGeometry: true
+        });
+        task.execute(params)
+          .then(function (response) {
+            // Go to feature and highlight
+            console.log(response.features);
+            mapView.goTo(response.features);
+            selectionLayer.graphics.removeAll();
+            graphicArray = [];
+            for (i=0; i<response.features.length; i++) {
+              console.log(response.features[i]);
+              highlightGraphic = new Graphic(response.features[i].geometry, highlightSymbol);
+              graphicArray.push(highlightGraphic);
+              multiPolygonGeometries.push(response.features[i].geometry);
+            }
+            selectionLayer.graphics.addMany(graphicArray);          
+          });
+          console.log(multiPolygonGeometries);
+          return union;
       }
 
     // Build State Agency dropdown
@@ -276,8 +312,8 @@ require([
     });
 
     // Watch Select State Agency dropdown
-    query("#selectAgencyPanel").on("change", function(){
-        console.log(values);
+    query("#selectAgencyPanel").on("change", function(e){
+       return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
     });
     
 
