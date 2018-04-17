@@ -120,8 +120,8 @@
         </div>
       </div>
       <div class="panel-body">
-        <label id="opacity-label" for="opacity-slider">Opacity: 100%</label>
-        <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value="1">
+        <label id="opacity-label" for="opacity-slider">Opacity: 50%</label>
+        <input id="opacity-slider" type="range" min="0" max="1" step="0.01" value=".5">
     </div>
     </div>
 
@@ -239,7 +239,7 @@
         title: "Parcels Layer",
         sublayers: [{
           id: 0,
-          title: "PLI Parcels",
+          title: "State Agencies",
           visible: true,
           minScale: 150000,
           popupTemplate: parcelsTemplate
@@ -356,6 +356,9 @@
         }]
 
       });
+
+      // Set initial opacity value
+      mapView.when(parcelsLayer.opacity=.5);
 
       // Watch Opacity-Slider
       query("#opacity-slider").on("input", function() {
