@@ -172,19 +172,20 @@ require([
           });
       }
 
-    function zoomToCounty(county) {
+    function zoomToOwner(feature) {
 
     var task = new QueryTask({
         url: parcelsLayerURL + "/0"
     });
     var params = new Query({
-        where: "own_name = '" + county + "'",
+        outFields: ["own_name" ,"parcel_id" , "state_par_", "pli_code", "no_lnd_unt", "av_nsd", "twn", "rng", "sec", "s_legal"],
+        where: "own_name = '" + feature + "'",
         returnGeometry: true
     });
     task.execute(params)
         .then(function(response) {
-            console.log(response.features[0].geometry);            
-            mapView.goTo(response.features[0].geometry);
+            console.log(response);            
+            mapView.goTo(response.features);
         });
     }
 
@@ -301,7 +302,8 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
-       return zoomToCounty(e.target.value);
+        console.log(e);
+       return zoomToOwner(e.target.value);
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
     });
     
