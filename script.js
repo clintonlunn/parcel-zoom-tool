@@ -104,7 +104,8 @@ require([
     });
 
     var selectionLayer = new GraphicsLayer({
-        listMode: "hide"
+        listMode: "hide",
+        visible: true
       });
 
 
@@ -171,35 +172,22 @@ require([
           });
       }
 
-      // Input location from drop down, zoom to it and highlight
-    function zoomToFeature(url, location, attribute) {
-        var multiPolygonGeometries = [];
-        var union = geometryEngine.union(multiPolygonGeometries);
-        var task = new QueryTask({
-          url: url
+    function zoomToCounty(county) {
+
+    var task = new QueryTask({
+        url: parcelsLayerURL + "/0"
+    });
+    var params = new Query({
+        where: "own_name = '" + county + "'",
+        returnGeometry: true
+    });
+    task.execute(params)
+        .then(function(response) {
+            console.log(response.features[0].geometry);            
+            mapView.goTo(response.features[0].geometry);
         });
-        var params = new Query({
-          where: attribute + " = '" + location + "'",
-          returnGeometry: true
-        });
-        task.execute(params)
-          .then(function (response) {
-            // Go to feature and highlight
-            console.log(response.features);
-            mapView.goTo(response.features);
-            selectionLayer.graphics.removeAll();
-            graphicArray = [];
-            for (i=0; i<response.features.length; i++) {
-              console.log(response.features[i]);
-              highlightGraphic = new Graphic(response.features[i].geometry, highlightSymbol);
-              graphicArray.push(highlightGraphic);
-              multiPolygonGeometries.push(response.features[i].geometry);
-            }
-            selectionLayer.graphics.addMany(graphicArray);          
-          });
-          console.log(multiPolygonGeometries);
-          return union;
-      }
+    }
+
 
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
@@ -313,7 +301,8 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
-       return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
+       return zoomToCounty(e.target.value);
+        //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
     });
     
 
