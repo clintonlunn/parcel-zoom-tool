@@ -186,6 +186,7 @@ require([
         .then(function(response) {
             console.log(response);            
             mapView.goTo(response.features);
+            document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
         });
     }
 
@@ -302,8 +303,8 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
-        console.log(e);
-       return zoomToOwner(e.target.value);
+        return zoomToOwner(e.target.value);
+       
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
     });
     
