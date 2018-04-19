@@ -184,10 +184,32 @@ require([
     });
     task.execute(params)
         .then(function(response) {
-            console.log(response);            
+            console.log(response.features[0].attributes.length);
+            console.log(response.features.length);
+            console.log(response);          
             mapView.goTo(response.features);
-            document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
+            $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
+            $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
+            $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
+            $('#pliCodediv').html('<b>PLI Code:</b> ' + response.features[0].attributes.pli_code);
+            $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
+            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
+            $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
+            
+            
+            //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
         });
+    }
+
+    function populateInfo (i) {
+        $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[i].attributes.own_name);
+        $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[i].attributes.parcel_id);
+        $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[i].attributes.state_par_);
+        $('#pliCodediv').html('<b>PLI Code:</b> ' + response.features[i].attributes.pli_code);
+        $('#valuediv').html('<b>Value:</b> ' + response.features[i].attributes.av_nsd);
+        $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[i].attributes.twn + ', ' + response.features[i].attributes.rng + ', ' + response.features[i].attributes.sec);
+        $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[i].attributes.s_legal);
+        
     }
 
 
