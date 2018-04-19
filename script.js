@@ -89,8 +89,7 @@ require([
     SimpleLineSymbol.STYLE_SOLID,
     new Color([66, 244, 217]), 1);
 
-    var response;
-
+    var parcelData = [];
 
     var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
     var parcelsLayer = new MapImageLayer ({
@@ -174,7 +173,7 @@ require([
           });
       }
 
-    function zoomToOwner(feature) {
+    function queryParcelOwners(feature) {
 
     var task = new QueryTask({
         url: parcelsLayerURL + "/0"
@@ -186,9 +185,13 @@ require([
     });
     task.execute(params)
         .then(function(response) {
-            console.log(response.features[0].attributes.length);
+            parcelData.length = 0;
             console.log(response.features.length);
-            console.log(response);          
+            console.log(response);         
+            for (i=0;i<response.features.length; i++) {
+                console.log("pushing");
+                parcelData.push(response.features[i]);
+            }; 
             mapView.goTo(response.features);
             $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
@@ -197,21 +200,44 @@ require([
             $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
+            $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
+
             
             return response;
             //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
         });
     }
 
-    function populateInfo (i) {
-        $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[i].attributes.own_name);
-        $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[i].attributes.parcel_id);
-        $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[i].attributes.state_par_);
-        $('#pliCodediv').html('<b>PLI Code:</b> ' + response.features[i].attributes.pli_code);
-        $('#valuediv').html('<b>Value:</b> ' + response.features[i].attributes.av_nsd);
-        $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[i].attributes.twn + ', ' + response.features[i].attributes.rng + ', ' + response.features[i].attributes.sec);
-        $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[i].attributes.s_legal);
-        
+    function indexParcels(e) {
+        console.log(parcelData.length);
+        if (e <= parcelData.length) {
+            console.log(parcelData[e]);
+            
+            $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[e].attributes.own_name);
+            $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e].attributes.parcel_id);
+            $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e].attributes.state_par_);
+            $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[e].attributes.pli_code);
+            $('#valuediv').html('<b>Value:</b> ' + parcelData[e].attributes.av_nsd);
+            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e].attributes.twn + ', ' + parcelData[e].attributes.rng + ', ' + parcelData[e].attributes.sec);
+            $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e].attributes.s_legal);
+            $('#arraylengthdiv').html('Parcel ' + e + ' of ' + parcelData.length);
+
+        }
+        else {
+            console.log("this is out of range");
+        }
+    }
+
+    function increment() {
+        $('#numinput').val( function(i, oldval) {
+            return ++oldval;
+        });
+    }
+
+    function decrement() {
+        $('#numinput').val( function(i, oldval) {
+            return --oldval;
+        });
     }
 
 
@@ -327,15 +353,26 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
-        return zoomToOwner(e.target.value);
+        queryParcelOwners(e.target.value);
+        console.log(parcelData);
        
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
     });
 
+    // Listen for number input
     query("#numberinputdiv").on("change", function(e) {
-        return populateInfo(e);
+        console.log(e.target.value);
+        indexParcels(e.target.value);
+    });
+
+    // Listen for the back button
+    query("#back").on("click", function() {
+        return decrement();
     });
     
+    query("#forward").on("click", function() {
+        return increment();
+    });
 
     // Popup Link event listener
     mapView.popup.on("trigger-action", function (event) {
