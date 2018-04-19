@@ -360,7 +360,7 @@ require([
     });
 
     // Listen for number input
-    query("#numberinputdiv").on("change", function(e) {
+    query("#numberinputdiv").on("input", function(e) {
         console.log(e.target.value);
         indexParcels(e.target.value);
     });
