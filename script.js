@@ -89,6 +89,8 @@ require([
     SimpleLineSymbol.STYLE_SOLID,
     new Color([66, 244, 217]), 1);
 
+    var response;
+
 
     var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
     var parcelsLayer = new MapImageLayer ({
@@ -196,7 +198,7 @@ require([
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
             
-            
+            return response;
             //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
         });
     }
@@ -328,6 +330,10 @@ require([
         return zoomToOwner(e.target.value);
        
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
+    });
+
+    query("#numberinputdiv").on("change", function(e) {
+        return populateInfo(e);
     });
     
 
