@@ -69,7 +69,7 @@ require([
 
 
     var parcelsSearchTemplate = {        
-        title: 'Owner: {own_name}',
+        title: 'Owner: {OWN_NAME}',
         content:
         "<p><b>Parcel ID:</b> {PARCEL_ID}</p>" +
         "<p><b>State Parcel ID:</b> {STATE_PAR_}</p>" +
@@ -210,9 +210,14 @@ require([
 
     function indexParcels(e) {
         console.log(parcelData.length);
-        if (e <= parcelData.length) {
+        console.log(e);
+        if (e < parcelData.length || e > 0) {
             console.log(parcelData[e]);
             
+            $('#arraylengthdiv').html('Parcel ' + e + ' of ' + parcelData.length);
+            
+            e = parseInt(e) + 1;
+            console.log(e)
             $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[e].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e].attributes.state_par_);
@@ -220,7 +225,8 @@ require([
             $('#valuediv').html('<b>Value:</b> ' + parcelData[e].attributes.av_nsd);
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e].attributes.twn + ', ' + parcelData[e].attributes.rng + ', ' + parcelData[e].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e].attributes.s_legal);
-            $('#arraylengthdiv').html('Parcel ' + e + ' of ' + parcelData.length);
+
+
 
         }
         else {
@@ -241,6 +247,28 @@ require([
     }
 
 
+
+    /*
+{
+        url: parcelsLayerURL,
+        popupTemplate: parcelsSearchTemplate
+        },
+        searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
+        suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
+        displayField: "PLI_CODE",
+        exactMatch: false,
+        outFields: ["pli_code", "parcel_id", "own_name", "own_state", "state_par_", "no_lnd_unt", "av_nsd", "twn", "sec", "s_legal", "rng"],
+        //outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
+        name: "Florida Public Land Inventories Parcels",
+        placeholder: "Search by Parcel ID, City, or County",
+        resultGraphicEnabled: true,
+        resultSymbol: {
+        type: "simple-line",
+        width: 2,
+        color: [0, 255, 197, 1]
+        },
+    */
+
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
 
@@ -251,22 +279,23 @@ require([
         allPlaceHolder: "Text search for Parcel ID",
         sources: [{
         featureLayer: {
-        url: parcelsLayerURL,
-        popupTemplate: parcelsSearchTemplate
-        },
-        searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
-        suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
-        displayField: "PLI_CODE",
-        exactMatch: false,
-        outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
-        name: "Florida Public Land Inventories Parcels",
-        placeholder: "Search by Parcel ID, City, or County",
-        resultGraphicEnabled: true,
-        resultSymbol: {
-        type: "simple-line",
-        width: 2,
-        color: [0, 255, 197, 1]
-        },
+            url: parcelsLayerURL,
+            popupTemplate: parcelsSearchTemplate
+            },
+            searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
+            suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
+            displayField: "PLI_CODE",
+            exactMatch: false,
+            outFields: ["pli_code", "parcel_id", "own_name", "own_state", "state_par_", "no_lnd_unt", "av_nsd", "twn", "sec", "s_legal", "rng"],
+            //outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
+            name: "Florida Public Land Inventories Parcels",
+            placeholder: "Search by Parcel ID, City, or County",
+            resultGraphicEnabled: true,
+            resultSymbol: {
+            type: "simple-line",
+            width: 2,
+            color: [0, 255, 197, 1]
+            },
         autoNavigate: false
 
     }, {
@@ -361,8 +390,12 @@ require([
 
     // Listen for number input
     query("#numinput").on("change", function(e) {
-        console.log(e.target.value);
+        if (e.target.value < parcelData.length) {
+        console.log("index value: " + e.target.value);
         indexParcels(e.target.value);
+        } else {
+            console.log("number out of range");
+        }
     });
 
     // Listen for the back button
