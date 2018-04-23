@@ -186,12 +186,12 @@ require([
     task.execute(params)
         .then(function(response) {
             parcelData.length = 0;
-            console.log(response.features.length);
             console.log(response);         
             for (i=0;i<response.features.length; i++) {
                 console.log("pushing");
                 parcelData.push(response.features[i]);
             }; 
+            console.log(parcelData);
             mapView.goTo(response.features);
             $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
@@ -234,40 +234,17 @@ require([
         }
     }
 
-    function increment() {
+    function incrementTxt() {
         $('#numinput').val( function(i, oldval) {
             return ++oldval;
         });
     }
 
-    function decrement() {
+    function decrementTxt() {
         $('#numinput').val( function(i, oldval) {
             return --oldval;
         });
     }
-
-
-
-    /*
-{
-        url: parcelsLayerURL,
-        popupTemplate: parcelsSearchTemplate
-        },
-        searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
-        suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
-        displayField: "PLI_CODE",
-        exactMatch: false,
-        outFields: ["pli_code", "parcel_id", "own_name", "own_state", "state_par_", "no_lnd_unt", "av_nsd", "twn", "sec", "s_legal", "rng"],
-        //outFields: ["PLI_CODE", "PARCEL_ID", "OWN_NAME", "OWN_STATE", "STATE_PAR_", "NO_LND_UNT", "AV_NSD", "TWN", "SEC", "S_LEGAL", "RNG"],
-        name: "Florida Public Land Inventories Parcels",
-        placeholder: "Search by Parcel ID, City, or County",
-        resultGraphicEnabled: true,
-        resultSymbol: {
-        type: "simple-line",
-        width: 2,
-        color: [0, 255, 197, 1]
-        },
-    */
 
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
@@ -382,6 +359,7 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
+        $('#numinput').val(0);
         queryParcelOwners(e.target.value);
         console.log(parcelData);
        
@@ -400,11 +378,20 @@ require([
 
     // Listen for the back button
     query("#back").on("click", function() {
-        return decrement();
+        value = $('#numinput').val();
+        value = parseInt(value);
+        console.log(typeof value);
+        indexParcels(--value);
+        return decrementTxt();
     });
     
     query("#forward").on("click", function() {
-        return increment();
+        value = $('#numinput').val();
+        value = parseInt(value);
+        console.log(typeof value);
+        indexParcels(++value);
+        return incrementTxt();
+        //return increment();
     });
 
     // Popup Link event listener
