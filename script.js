@@ -87,7 +87,7 @@ require([
 
     var highlightSymbol = new SimpleLineSymbol(
     SimpleLineSymbol.STYLE_SOLID,
-    new Color([66, 244, 217]), 1);
+    new Color([96, 96, 96]), 3);
     
     var highlightGraphic;
     var parcelData = [];
@@ -194,7 +194,7 @@ require([
                 parcelData.push(response.features[i]);
             }; 
             console.log(parcelData);
-            //mapView.goTo(response.features);
+            mapView.goTo(response.features);
             $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
@@ -260,11 +260,7 @@ require([
             name: "Florida Public Land Inventories Parcels",
             placeholder: "Search by Parcel ID, City, or County",
             resultGraphicEnabled: true,
-            resultSymbol: {
-            type: "simple-line",
-            width: 2,
-            color: [0, 255, 197, 1]
-            },
+            resultSymbol: highlightSymbol,
         autoNavigate: false
 
     }, {
@@ -353,6 +349,7 @@ require([
     query("#selectAgencyPanel").on("change", function(e){
         $('#numinput').val(1);
         queryParcelOwners(e.target.value);
+        console.log(e.target.value);
         console.log(parcelData);
        
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
@@ -360,7 +357,7 @@ require([
 
     // Listen for number input
     query("#numinput").on("change", function(e) {
-        if (e.target.value < parcelData.length && e.target.value > 1) {
+        if (e.target.value < parcelData.length && e.target.value >= 1) {
         console.log("index value: " + e.target.value);
         indexParcels(e.target.value);
         var parcelVal = $('#numinput').val();
@@ -380,7 +377,6 @@ require([
         
         highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
         selectionLayer.graphics.add(highlightGraphic);
-
 
         } else {
             $('#numinput').val(currentIndex);
@@ -409,9 +405,6 @@ require([
         // Highlight the selected parcel
         highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
         selectionLayer.graphics.add(highlightGraphic);
-
-        console.log(value);
-
         }
         
     });
@@ -438,10 +431,18 @@ require([
         // Highlight the selected parcel
         highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
         selectionLayer.graphics.add(highlightGraphic);
-
-
         }
     });
+
+
+    searchWidget.on("search-complete", function(event){
+        // The results are stored in the event Object[]
+        //console.log("Results of the search: ", event);
+        var owner = event.results[0].results[0].feature.attributes.own_name;
+        console.log("Owner of parcel:", event.results[0].results[0].feature.attributes.own_name);
+        queryParcelOwners(owner);
+      });
+
 
     // Popup Link event listener
     mapView.popup.on("trigger-action", function (event) {
