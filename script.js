@@ -200,7 +200,7 @@ require([
             $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
-            $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
+            $('#arraylengthdiv').html('Parcel 0 of ' + response.features.length);
 
             
             return response;
@@ -213,10 +213,11 @@ require([
         console.log(e);
         if (e < parcelData.length || e > 0) {
             console.log(parcelData[e]);
+            console.log(typeof e);
             
-            $('#arraylengthdiv').html('Parcel ' + e + ' of ' + parcelData.length);
+            $('#arraylengthdiv').html('Parcel ' + (e+1) + ' of ' + parcelData.length);
             
-            e = parseInt(e) + 1;
+            //e = parseInt(e) + 1;
             console.log(e)
             $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[e].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e].attributes.parcel_id);
@@ -234,6 +235,7 @@ require([
         }
     }
 
+/*
     function incrementTxt() {
         $('#numinput').val( function(i, oldval) {
             return ++oldval;
@@ -245,7 +247,7 @@ require([
             return --oldval;
         });
     }
-
+*/
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
 
@@ -378,20 +380,27 @@ require([
 
     // Listen for the back button
     query("#back").on("click", function() {
+        if ($('#numinput').val() > 0) {
         value = $('#numinput').val();
         value = parseInt(value);
         console.log(typeof value);
         indexParcels(--value);
-        return decrementTxt();
+        $('#numinput').val(value);
+        }
+        //return decrementTxt();
     });
     
+    // Listen for forward button
     query("#forward").on("click", function() {
+        if ($('#numinput').val() < parcelData.length) {
         value = $('#numinput').val();
         value = parseInt(value);
         console.log(typeof value);
         indexParcels(++value);
-        return incrementTxt();
-        //return increment();
+        $('#numinput').val(value);
+
+        //return incrementTxt();
+        }
     });
 
     // Popup Link event listener
