@@ -200,7 +200,7 @@ require([
             $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
-            $('#arraylengthdiv').html('Parcel 0 of ' + response.features.length);
+            $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
 
             
             return response;
@@ -215,17 +215,17 @@ require([
             console.log(parcelData[e]);
             console.log(typeof e);
             
-            $('#arraylengthdiv').html('Parcel ' + (e+1) + ' of ' + parcelData.length);
+            $('#arraylengthdiv').html('Parcel ' + (e) + ' of ' + parcelData.length);
             
             //e = parseInt(e) + 1;
             console.log(e)
-            $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[e].attributes.own_name);
-            $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e].attributes.parcel_id);
-            $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e].attributes.state_par_);
-            $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[e].attributes.pli_code);
-            $('#valuediv').html('<b>Value:</b> ' + parcelData[e].attributes.av_nsd);
-            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e].attributes.twn + ', ' + parcelData[e].attributes.rng + ', ' + parcelData[e].attributes.sec);
-            $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e].attributes.s_legal);
+            $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[e-1].attributes.own_name);
+            $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e-1].attributes.parcel_id);
+            $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e-1].attributes.state_par_);
+            $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[e-1].attributes.pli_code);
+            $('#valuediv').html('<b>Value:</b> ' + parcelData[e-1].attributes.av_nsd);
+            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e-1].attributes.twn + ', ' + parcelData[e-1].attributes.rng + ', ' + parcelData[e-1].attributes.sec);
+            $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e-1].attributes.s_legal);
 
 
 
@@ -234,20 +234,10 @@ require([
             console.log("this is out of range");
         }
     }
+    
+    function zoomTo(e) {
 
-/*
-    function incrementTxt() {
-        $('#numinput').val( function(i, oldval) {
-            return ++oldval;
-        });
     }
-
-    function decrementTxt() {
-        $('#numinput').val( function(i, oldval) {
-            return --oldval;
-        });
-    }
-*/
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
 
@@ -361,7 +351,7 @@ require([
 
     // Watch Select State Agency dropdown
     query("#selectAgencyPanel").on("change", function(e){
-        $('#numinput').val(0);
+        $('#numinput').val(1);
         queryParcelOwners(e.target.value);
         console.log(parcelData);
        
@@ -378,9 +368,16 @@ require([
         }
     });
 
+    query("#zoomTo").on("click", function(e) {
+        var parcelVal = $('#numinput').val();
+        var indexVal = parcelVal - 1;
+
+        mapView.goTo(parcelData[indexVal]);
+    })
+
     // Listen for the back button
     query("#back").on("click", function() {
-        if ($('#numinput').val() > 0) {
+        if ($('#numinput').val() > 1) {
         value = $('#numinput').val();
         value = parseInt(value);
         console.log(typeof value);
