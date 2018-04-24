@@ -192,7 +192,7 @@ require([
                 parcelData.push(response.features[i]);
             }; 
             console.log(parcelData);
-            mapView.goTo(response.features);
+            //mapView.goTo(response.features);
             $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
