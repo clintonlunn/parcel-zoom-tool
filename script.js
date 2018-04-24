@@ -147,6 +147,7 @@ require([
           where: "1 = 1 AND " + attribute + " IS NOT NULL",
           outFields: [attribute],
           returnDistinctValues: true,
+          returnExceededLimitFeatures: true,
           });
   
         var option = domConstruct.create("option");
@@ -155,7 +156,7 @@ require([
   
         task.execute(params)
           .then(function (response) {
-            //console.log(response.features);
+            console.log(response.features);
             var features = response.features;
             var values = features.map(function (feature) {
               return feature.attributes[attribute];
@@ -210,6 +211,57 @@ require([
         });
     }
 
+    function querySearch(owner, parcel) {
+
+        var task = new QueryTask({
+            url: parcelsLayerURL + "/0"
+        });
+        var params = new Query({
+            outFields: ["own_name" ,"parcel_id" , "state_par_", "pli_code", "no_lnd_unt", "av_nsd", "twn", "rng", "sec", "s_legal"],
+            where: "own_name = '" + owner + "'",
+            returnGeometry: true
+        });
+        task.execute(params)
+            .then(function(response) {
+                parcelData.length = 0;
+                console.log(response);         
+                for (i=0;i<response.features.length; i++) {
+                    console.log("pushing");
+                    parcelData.push(response.features[i]);
+                }; 
+                console.log(parcelData);
+
+
+                for (i=0; i<response.features.length; i++) {
+                    console.log(response.features[i].attributes.parcel_id);
+                    if (parcel == response.features[i].attributes.parcel_id) {
+                        console.log(i);
+                    return i;
+                    } 
+                }
+                //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
+            }).then(function(i) {
+
+                console.log("current index: ", i);
+
+                //mapView.goTo(response.features[i].geometry);
+                var currentIndex = i;
+                var outputNum = i+1
+
+                $('#ownerdiv').html('<b>Owner Name:</b> ' + parcelData[i].attributes.own_name);
+                $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[i].attributes.parcel_id);
+                $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[i].attributes.state_par_);
+                $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[i].attributes.pli_code);
+                $('#valuediv').html('<b>Value:</b> ' + parcelData[i].attributes.av_nsd);
+                $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[i].attributes.twn + ', ' + parcelData[i].attributes.rng + ', ' + parcelData[i].attributes.sec);
+                $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[i].attributes.s_legal);
+                $('#arraylengthdiv').html('Parcel ' + outputNum + ' of ' + parcelData.length);
+                $('#numinput').val(i+1);
+                $('#selectAgencyPanel').val(parcelData[i].attributes.own_name);
+                console.log('created divs');
+            });
+        }
+
     function indexParcels(e) {
         console.log(parcelData.length);
         console.log(e);
@@ -251,7 +303,7 @@ require([
             url: parcelsLayerURL,
             popupTemplate: parcelsSearchTemplate
             },
-            searchFields: ["PARCEL_ID", "STATE_PAR_", "OWN_CITY", "OWN_NAME"],
+            searchFields: ["parcel_id", "state_par_", "own_city", "own_name"],
             suggestionTemplate: "PID: {parcel_id}, State PID: {state_par_}, City: {own_city}, Parcel Name: {own_name}",
             displayField: "PLI_CODE",
             exactMatch: false,
@@ -261,7 +313,8 @@ require([
             placeholder: "Search by Parcel ID, City, or County",
             resultGraphicEnabled: true,
             resultSymbol: highlightSymbol,
-        autoNavigate: false
+            autoNavigate: false,
+            popupEnabled: false
 
     }, {
         locator: new Locator({ url: "//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer" }),
@@ -439,8 +492,9 @@ require([
         // The results are stored in the event Object[]
         //console.log("Results of the search: ", event);
         var owner = event.results[0].results[0].feature.attributes.own_name;
+        var parcel = event.results[0].results[0].feature.attributes.parcel_id; 
         console.log("Owner of parcel:", event.results[0].results[0].feature.attributes.own_name);
-        queryParcelOwners(owner);
+        querySearch(owner, parcel);
       });
 
 
