@@ -88,8 +88,10 @@ require([
     var highlightSymbol = new SimpleLineSymbol(
     SimpleLineSymbol.STYLE_SOLID,
     new Color([66, 244, 217]), 1);
-
+    
+    var highlightGraphic;
     var parcelData = [];
+    var currentIndex;
 
     var parcelsLayerURL = "https://admin205.ispa.fsu.edu/arcgis/rest/services/PLI/PLI_2017/MapServer";
     var parcelsLayer = new MapImageLayer ({
@@ -201,7 +203,7 @@ require([
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
             $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
-
+            var currentIndex = 0;
             
             return response;
             //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
@@ -226,7 +228,7 @@ require([
             $('#valuediv').html('<b>Value:</b> ' + parcelData[e-1].attributes.av_nsd);
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e-1].attributes.twn + ', ' + parcelData[e-1].attributes.rng + ', ' + parcelData[e-1].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e-1].attributes.s_legal);
-
+            currentIndex = e;
 
 
         }
@@ -235,9 +237,7 @@ require([
         }
     }
     
-    function zoomTo(e) {
 
-    }
     // Build State Agency dropdown
     buildSelectPanel(parcelsLayerURL + "/0", "own_name", "Select a State Agency", "selectAgencyPanel");
 
@@ -360,31 +360,60 @@ require([
 
     // Listen for number input
     query("#numinput").on("change", function(e) {
-        if (e.target.value < parcelData.length) {
+        if (e.target.value < parcelData.length && e.target.value > 1) {
         console.log("index value: " + e.target.value);
         indexParcels(e.target.value);
-        } else {
-            console.log("number out of range");
-        }
-    });
-
-    query("#zoomTo").on("click", function(e) {
         var parcelVal = $('#numinput').val();
         var indexVal = parcelVal - 1;
 
+        // Determine the index value
+        var parcelVal = $('#numinput').val();
+        var indexVal = parcelVal - 1;
+        
+        // Go to the selected parcel
         mapView.goTo(parcelData[indexVal]);
-    })
+
+        // Remove current selection
+        selectionLayer.graphics.removeAll();
+
+        // Highlight the selected parcel
+        
+        highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
+        selectionLayer.graphics.add(highlightGraphic);
+
+
+        } else {
+            $('#numinput').val(currentIndex);
+            console.log("number out of range");
+        }
+    });
 
     // Listen for the back button
     query("#back").on("click", function() {
         if ($('#numinput').val() > 1) {
         value = $('#numinput').val();
         value = parseInt(value);
-        console.log(typeof value);
         indexParcels(--value);
         $('#numinput').val(value);
+
+        // Determine the index value
+        var parcelVal = $('#numinput').val();
+        var indexVal = parcelVal - 1;
+
+        // Go to the selected parcel
+        mapView.goTo(parcelData[indexVal]);
+
+        // Remove current selection
+        selectionLayer.graphics.removeAll();
+
+        // Highlight the selected parcel
+        highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
+        selectionLayer.graphics.add(highlightGraphic);
+
+        console.log(value);
+
         }
-        //return decrementTxt();
+        
     });
     
     // Listen for forward button
@@ -396,7 +425,21 @@ require([
         indexParcels(++value);
         $('#numinput').val(value);
 
-        //return incrementTxt();
+        // Determine the index value
+        var parcelVal = $('#numinput').val();
+        var indexVal = parcelVal - 1;
+        
+        // Go to the selected parcel
+        mapView.goTo(parcelData[indexVal]);
+
+        // Remove current selection
+        selectionLayer.graphics.removeAll();
+
+        // Highlight the selected parcel
+        highlightGraphic = new Graphic(parcelData[indexVal].geometry, highlightSymbol);
+        selectionLayer.graphics.add(highlightGraphic);
+
+
         }
     });
 
