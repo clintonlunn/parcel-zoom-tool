@@ -190,7 +190,20 @@ require([
                 parcelData.push(response.features[i]);
             }; 
             console.log(parcelData);
-            mapView.goTo(response.features);
+
+            // Zoom to feature
+            var ext = response.features[0].geometry.extent;
+            var cloneExt = ext.clone();
+            mapView.goTo({
+                target: response.features[0],
+                extent: cloneExt.expand(1.75)
+            });
+
+            // Add selection to graphic
+            selectionLayer.graphics.removeAll();
+            highlightGraphic = new Graphic(response.features[0].geometry, highlightSymbol);
+            selectionLayer.graphics.add(highlightGraphic);
+
             $('#ownerdiv').html('<b>Owner Name:</b> ' + response.features[0].attributes.own_name);
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
