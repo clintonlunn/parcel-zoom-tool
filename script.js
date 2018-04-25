@@ -495,8 +495,10 @@ require([
         var parcel = event.results[0].results[0].feature.attributes.parcel_id; 
         console.log("Owner of parcel:", event.results[0].results[0].feature.attributes.own_name);
         querySearch(owner, parcel);
+        $("#panelPopup").show();
+        $("#panelInfo").close();
+        console.log("succeeded");
       });
-
 
     // Popup Link event listener
     mapView.popup.on("trigger-action", function (event) {
