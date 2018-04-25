@@ -377,7 +377,7 @@ require([
         var value = parseFloat(dom.byId("opacity-slider").value);
         dom.byId("opacity-label").innerText = "Opacity: " + Math.round(value * 100) + "%";
         parcelsLayer.opacity = value;
-        console.log(parcelsLayer.opacity);
+        //console.log(parcelsLayer.opacity);
         });
     
     // Watch search result
@@ -394,7 +394,6 @@ require([
     query("#selectAgencyPanel").on("change", function(e){
         $('#numinput').val(1);
         queryParcelOwners(e.target.value);
-        console.log(e.target.value);
         console.log(parcelData);
        
         //return zoomToFeature(parcelsLayerURL + "/0", e.target.value, "own_name");
@@ -403,7 +402,6 @@ require([
     // Listen for number input
     query("#numinput").on("change", function(e) {
         if (e.target.value < parcelData.length && e.target.value >= 1) {
-        console.log("index value: " + e.target.value);
         indexParcels(e.target.value);
         var parcelVal = $('#numinput').val();
         var indexVal = parcelVal - 1;
@@ -470,7 +468,6 @@ require([
         if ($('#numinput').val() < parcelData.length) {
         value = $('#numinput').val();
         value = parseInt(value);
-        console.log(typeof value);
         indexParcels(++value);
         $('#numinput').val(value);
 
@@ -498,10 +495,8 @@ require([
 
     searchWidget.on("search-complete", function(event){
         // The results are stored in the event Object[]
-        //console.log("Results of the search: ", event);
         var owner = event.results[0].results[0].feature.attributes.own_name;
         var parcel = event.results[0].results[0].feature.attributes.parcel_id; 
-        console.log("Owner of parcel:", event.results[0].results[0].feature.attributes.own_name);
         querySearch(owner, parcel);
       });
 
