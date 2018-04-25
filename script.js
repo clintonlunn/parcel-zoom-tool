@@ -413,7 +413,13 @@ require([
         var indexVal = parcelVal - 1;
         
         // Go to the selected parcel
-        mapView.goTo(parcelData[indexVal]);
+        //mapView.goTo(parcelData[indexVal]);
+        var ext = parcelData[indexVal].geometry.extent;
+        var cloneExt = ext.clone();
+        mapView.goTo({
+            target: parcelData[indexVal],
+            extent: cloneExt.expand(1.75)
+        });
 
         // Remove current selection
         selectionLayer.graphics.removeAll();
@@ -442,7 +448,12 @@ require([
         var indexVal = parcelVal - 1;
 
         // Go to the selected parcel
-        mapView.goTo(parcelData[indexVal]);
+        var ext = parcelData[indexVal].geometry.extent;
+        var cloneExt = ext.clone();
+        mapView.goTo({
+            target: parcelData[indexVal],
+            extent: cloneExt.expand(1.75)
+        });
 
         // Remove current selection
         selectionLayer.graphics.removeAll();
@@ -468,7 +479,12 @@ require([
         var indexVal = parcelVal - 1;
         
         // Go to the selected parcel
-        mapView.goTo(parcelData[indexVal]);
+        var ext = parcelData[indexVal].geometry.extent;
+        var cloneExt = ext.clone();
+        mapView.goTo({
+            target: parcelData[indexVal],
+            extent: cloneExt.expand(1.75)
+        });
 
         // Remove current selection
         selectionLayer.graphics.removeAll();
