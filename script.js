@@ -208,14 +208,14 @@ require([
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + response.features[0].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
             $('#pliCodediv').html('<b>PLI Code:</b> ' + response.features[0].attributes.pli_code);
-            $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
+            $('#valuediv').html('<b>Value:</b> $' + response.features[0].attributes.av_nsd.toLocaleString());
+            $('#sizediv').html('<b>Size:</b> ' + parcelData[0].attributes.no_lnd_unt.toLocaleString() + ' Acres');
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ' ' + response.features[0].attributes.rng + ' ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
             $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
             var currentIndex = 0;
             
             return response;
-            //document.getElementById('ownerdiv').innerHTML = response.features[0].attributes.own_name;
         });
     }
 
@@ -260,7 +260,8 @@ require([
                 $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[i].attributes.parcel_id);
                 $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[i].attributes.state_par_);
                 $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[i].attributes.pli_code);
-                $('#valuediv').html('<b>Value:</b> ' + parcelData[i].attributes.av_nsd);
+                $('#valuediv').html('<b>Value:</b> $' + parcelData[i].attributes.av_nsd.toLocaleString());
+                $('#sizediv').html('<b>Size:</b> ' + parcelData[i].attributes.no_lnd_unt.toLocaleString() + ' Acres');
                 $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[i].attributes.twn + ' ' + parcelData[i].attributes.rng + ' ' + parcelData[i].attributes.sec);
                 $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[i].attributes.s_legal);
                 $('#arraylengthdiv').html('Parcel ' + outputNum + ' of ' + parcelData.length);
@@ -282,7 +283,8 @@ require([
             $('#parcelIDdiv').html('<b>Parcel ID:</b> ' + parcelData[e-1].attributes.parcel_id);
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e-1].attributes.state_par_);
             $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[e-1].attributes.pli_code);
-            $('#valuediv').html('<b>Value:</b> ' + parcelData[e-1].attributes.av_nsd);
+            $('#valuediv').html('<b>Value:</b> $' + parcelData[e-1].attributes.av_nsd.toLocaleString());
+            $('#sizediv').html('<b>Size:</b> ' + parcelData[e-1].attributes.no_lnd_unt.toLocaleString() + ' Acres');
             $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e-1].attributes.twn + ' ' + parcelData[e-1].attributes.rng + ' ' + parcelData[e-1].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e-1].attributes.s_legal);
             currentIndex = e;
