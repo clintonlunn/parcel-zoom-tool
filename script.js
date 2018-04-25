@@ -60,11 +60,6 @@ require([
         "<p><b>Value:</b> ${av_nsd:NumberFormat(places: 2)}</p>" +  
         "<p><b>TRS:</b> {twn} {rng} {sec}</p>" +
         "<p><b>Legal Description:</b> {s_legal}</p>" ,
-        actions: [{
-        title: "Visit the FL Public Lands Inventory Website",
-        id: "pliWebsite",
-        className: "esri-icon-launch-link-external"
-        }]
     };
 
 
@@ -156,7 +151,7 @@ require([
   
         task.execute(params)
           .then(function (response) {
-            console.log(response.features);
+            //console.log(response.features);
             var features = response.features;
             var values = features.map(function (feature) {
               return feature.attributes[attribute];
@@ -201,7 +196,7 @@ require([
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + response.features[0].attributes.state_par_);
             $('#pliCodediv').html('<b>PLI Code:</b> ' + response.features[0].attributes.pli_code);
             $('#valuediv').html('<b>Value:</b> ' + response.features[0].attributes.av_nsd);
-            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ', ' + response.features[0].attributes.rng + ', ' + response.features[0].attributes.sec);
+            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + response.features[0].attributes.twn + ' ' + response.features[0].attributes.rng + ' ' + response.features[0].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + response.features[0].attributes.s_legal);
             $('#arraylengthdiv').html('Parcel 1 of ' + response.features.length);
             var currentIndex = 0;
@@ -253,12 +248,11 @@ require([
                 $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[i].attributes.state_par_);
                 $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[i].attributes.pli_code);
                 $('#valuediv').html('<b>Value:</b> ' + parcelData[i].attributes.av_nsd);
-                $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[i].attributes.twn + ', ' + parcelData[i].attributes.rng + ', ' + parcelData[i].attributes.sec);
+                $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[i].attributes.twn + ' ' + parcelData[i].attributes.rng + ' ' + parcelData[i].attributes.sec);
                 $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[i].attributes.s_legal);
                 $('#arraylengthdiv').html('Parcel ' + outputNum + ' of ' + parcelData.length);
                 $('#numinput').val(i+1);
                 $('#selectAgencyPanel').val(parcelData[i].attributes.own_name);
-                console.log('created divs');
             });
         }
 
@@ -266,9 +260,7 @@ require([
         console.log(parcelData.length);
         console.log(e);
         if (e < parcelData.length || e > 0) {
-            console.log(parcelData[e]);
-            console.log(typeof e);
-            
+
             $('#arraylengthdiv').html('Parcel ' + (e) + ' of ' + parcelData.length);
             
             //e = parseInt(e) + 1;
@@ -285,7 +277,7 @@ require([
 
         }
         else {
-            console.log("this is out of range");
+            console.log("this value out of range");
         }
     }
     
@@ -495,9 +487,6 @@ require([
         var parcel = event.results[0].results[0].feature.attributes.parcel_id; 
         console.log("Owner of parcel:", event.results[0].results[0].feature.attributes.own_name);
         querySearch(owner, parcel);
-        $("#panelPopup").show();
-        $("#panelInfo").close();
-        console.log("succeeded");
       });
 
     // Popup Link event listener
