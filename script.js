@@ -283,7 +283,7 @@ require([
             $('#stateParceldiv').html('<b>State Parcel ID:</b> ' + parcelData[e-1].attributes.state_par_);
             $('#pliCodediv').html('<b>PLI Code:</b> ' + parcelData[e-1].attributes.pli_code);
             $('#valuediv').html('<b>Value:</b> ' + parcelData[e-1].attributes.av_nsd);
-            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e-1].attributes.twn + ', ' + parcelData[e-1].attributes.rng + ', ' + parcelData[e-1].attributes.sec);
+            $('#trsdiv').html('<b>Township, Range, Section:</b> ' + parcelData[e-1].attributes.twn + ' ' + parcelData[e-1].attributes.rng + ' ' + parcelData[e-1].attributes.sec);
             $('#legaldiv').html('<b>Legal Description:</b> ' + parcelData[e-1].attributes.s_legal);
             currentIndex = e;
 
